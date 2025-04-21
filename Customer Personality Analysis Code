@@ -1,0 +1,17 @@
+import pandas as pd
+import zipfile
+zip_path = "C:/Users/HP/Downloads/archive.zip"
+with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall("/mnt/data/")
+
+csv_path = "/mnt/data/marketing_campaign.csv"
+df = pd.read_csv(csv_path, sep='\t')
+
+df_cleaned = df.drop_duplicates()
+df_cleaned = df_cleaned.dropna()
+df_cleaned.columns = df_cleaned.columns.str.lower().str.replace(" ", "_")
+df_cleaned['dt_customer'] = pd.to_datetime(df_cleaned['dt_customer'], format='%d-%m-%Y')
+
+print("Shape:", df_cleaned.shape)
+print("Data types:\n", df_cleaned.dtypes)
+print("Null values:\n", df_cleaned.isnull().sum())
